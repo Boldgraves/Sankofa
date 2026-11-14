@@ -7,7 +7,10 @@ import type {
   Site,
 } from "./types";
 
-const BASE = (import.meta.env.VITE_API_BASE as string | undefined) ?? "/api";
+const BASE = ((import.meta.env.VITE_API_BASE as string | undefined) ?? "/api").replace(
+  /\/+$/,
+  "",
+);
 
 async function getJson<T>(path: string, signal?: AbortSignal): Promise<T> {
   const response = await fetch(`${BASE}${path}`, { signal });

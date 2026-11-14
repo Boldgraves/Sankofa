@@ -35,9 +35,11 @@ export default function NdviChart({ data, loading }: Props) {
         <h2 className="font-display text-lg tracking-[0.05em] text-text-primary">
           Field Vegetation Health (MODIS NDVI, 2019–2024)
         </h2>
-        <span className="border border-border bg-elevated px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-text-secondary">
-          Pre-fetched MODIS NDVI Data
-        </span>
+        {hasSeries && !loading && (
+          <span className="border border-border bg-elevated px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-text-secondary">
+            Pre-fetched MODIS NDVI Data
+          </span>
+        )}
       </div>
 
       {loading ? (
@@ -105,9 +107,15 @@ export default function NdviChart({ data, loading }: Props) {
           </div>
         </>
       ) : (
-        <p className="mt-3 bg-elevated px-3 py-6 text-center text-sm text-text-secondary">
-          NDVI trend unavailable for this location — tile overlay active.
-        </p>
+        <div className="mt-2 flex h-[200px] flex-col items-center justify-center border border-border bg-elevated px-5 text-center">
+          <p className="text-sm font-medium text-text-secondary">
+            NDVI time series unavailable for this location
+          </p>
+          <p className="mt-2 max-w-md text-[11px] leading-relaxed text-text-secondary/80">
+            Showing MODIS tile overlay on map. Pre-fetched series available for 7 reference sites:
+            Tamale, Bolgatanga, Wa, Techiman, Kumasi, Kade, Cape Coast.
+          </p>
+        </div>
       )}
     </section>
   );

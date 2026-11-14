@@ -61,15 +61,31 @@ def narrate(cards: list[dict], location: dict, climate: dict) -> dict:
                 headers={"x-goog-api-key": api_key},
                 json={
                     "contents": [{"parts": [{"text": prompt}]}],
-                    "generationConfig": {"temperature": 0.3, "maxOutputTokens": 512},
+                    "generationConfig": {
+                        "temperature": 0.3,
+                        "maxOutputTokens": 1024,
+                        # 3.x models otherwise spend ~1,000+ tokens on hidden
+                        # reasoning and stop mid-sentence with MAX_TOKENS.
+                        "thinkingConfig": {"thinkingBudget": 0},
+                    },
                 },
             )
             response.raise_for_status()
             payload = response.json()
-        text = payload["candidates"][0]["content"]["parts"][0]["text"].strip()
+        candidate = payload["candidates"][0]
+        # Join every text part untrimmed apart from whitespace: a response can be
+        # split across parts, and only taking parts[0] silently drops the rest.
+        text = "".join(
+            part.get("text", "") for part in candidate.get("content", {}).get("parts", [])
+        ).strip()
         if not text:
             raise ValueError("empty narration")
-        return {"text": text, "generated": True, "model": GEMINI_MODEL}
+        return {
+            "text": text,
+            "generated": True,
+            "model": GEMINI_MODEL,
+            "finish_reason": candidate.get("finishReason"),
+        }
     except Exception as exc:
         log.warning("Gemini narration failed (%s); using rule-based text", exc)
         return {"text": fallback, "generated": False, "model": None}

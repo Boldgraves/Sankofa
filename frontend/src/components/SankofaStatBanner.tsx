@@ -50,7 +50,7 @@ export default function SankofaStatBanner({ onset, loading, error }: Props) {
       title={detail}
       role="status"
     >
-      <p className="text-[15px] leading-snug lg:whitespace-nowrap lg:overflow-hidden lg:text-ellipsis">
+      <p className="text-[15px] leading-snug">
         <span aria-hidden="true">🌧</span> {text}
       </p>
     </div>

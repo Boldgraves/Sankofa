@@ -94,7 +94,7 @@ Google Gemini `gemini-3.5-flash` is used in production for plain-language narrat
 | Rain fit | NASA POWER PRECTOTCORR vs crop water need | Farmer water priority |
 | Soil fit | SoilGrids pH + SOC vs crop tolerances | Farmer soil priority |
 | GAEZ suitability | FAO agro-ecological zone match | Equal weight |
-| Market value | Crop library market_value field | Farmer market priority |
+| Market value | Crop library market field | Farmer market priority |
 
 Tiebreak order: water sub-score → soil sub-score → market sub-score.
 Baseline (current rotation) always appears first; alternatives must score ≥0.2 above baseline to be listed above it.

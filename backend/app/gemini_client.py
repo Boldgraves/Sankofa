@@ -5,12 +5,17 @@ already-computed numbers into one short paragraph for the farmer. If no
 GEMINI_API_KEY is configured, or the call fails, a rule-based sentence is
 returned and the response is flagged generated=False so the UI never labels
 template text as AI output.
+
+Successful narrations are cached for six hours, keyed on the factors that change
+the text (crop, zone, rainfall bucket, top score), so slider and priority tweaks
+that land on the same story do not spend another request.
 """
 
 from __future__ import annotations
 
 import logging
 import os
+import time
 
 import httpx
 
@@ -18,6 +23,11 @@ log = logging.getLogger("sankofa.gemini")
 
 GEMINI_MODEL = "gemini-3.5-flash"
 ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
+TTL_SECONDS = 6 * 60 * 60
+RAIN_BUCKET_MM = 50
+
+# (crop, zone, rainfall bucket, top score) -> (fetched_at, payload)
+_CACHE: dict[tuple, tuple[float, dict]] = {}
 
 
 def _fallback_text(cards: list[dict], location: dict) -> str:
@@ -32,11 +42,34 @@ def _fallback_text(cards: list[dict], location: dict) -> str:
     )
 
 
+def _cache_key(cards: list[dict], location: dict, climate: dict) -> tuple:
+    """Identity of the story being narrated, not of the exact request."""
+    top = cards[0]
+    crop = top["crops"][0] if top.get("crops") else top["id"]
+    rain = float(climate.get("seasonal_rainfall_mm") or 0)
+    return (
+        crop,
+        location.get("zone"),
+        int(round(rain / RAIN_BUCKET_MM)) * RAIN_BUCKET_MM,
+        round(float(top["score"]), 1),
+    )
+
+
 def narrate(cards: list[dict], location: dict, climate: dict) -> dict:
     fallback = _fallback_text(cards, location)
+    if not cards:
+        return {"text": fallback, "generated": False, "model": None, "cached": False}
+
+    key = _cache_key(cards, location, climate)
+    now = time.time()
+    hit = _CACHE.get(key)
+    if hit and now - hit[0] < TTL_SECONDS:
+        log.info("narration cache hit %s", key)
+        return {**hit[1], "cached": True}
+
     api_key = os.getenv("GEMINI_API_KEY")
-    if not api_key or not cards:
-        return {"text": fallback, "generated": False, "model": None}
+    if not api_key:
+        return {"text": fallback, "generated": False, "model": None, "cached": False}
 
     top = cards[:3]
     summary = "\n".join(
@@ -80,12 +113,15 @@ def narrate(cards: list[dict], location: dict, climate: dict) -> dict:
         ).strip()
         if not text:
             raise ValueError("empty narration")
-        return {
-            "text": text,
-            "generated": True,
-            "model": GEMINI_MODEL,
-            "finish_reason": candidate.get("finishReason"),
-        }
     except Exception as exc:
         log.warning("Gemini narration failed (%s); using rule-based text", exc)
-        return {"text": fallback, "generated": False, "model": None}
+        return {"text": fallback, "generated": False, "model": None, "cached": False}
+
+    result = {
+        "text": text,
+        "generated": True,
+        "model": GEMINI_MODEL,
+        "finish_reason": candidate.get("finishReason"),
+    }
+    _CACHE[key] = (now, result)
+    return {**result, "cached": False}

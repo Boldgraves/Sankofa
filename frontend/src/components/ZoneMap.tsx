@@ -24,11 +24,11 @@ const OUTLINE: Array<[number, number]> = [
 ];
 
 const ZONES = [
-  { name: "Sudan Savannah", from: 11.0, to: 11.4, fill: "#e7cd93" },
-  { name: "Guinea Savannah", from: 9.0, to: 11.0, fill: "#eeddaf" },
-  { name: "Transition", from: 7.3, to: 9.0, fill: "#dde2ad" },
-  { name: "Forest", from: 6.0, to: 7.3, fill: "#c3d8a9" },
-  { name: "Coastal Savannah", from: 4.6, to: 6.0, fill: "#d5e3c3" },
+  { name: "Sudan Savannah", from: 11.0, to: 11.4, fill: "#2a2318" },
+  { name: "Guinea Savannah", from: 9.0, to: 11.0, fill: "#312a1a" },
+  { name: "Transition", from: 7.3, to: 9.0, fill: "#23301c" },
+  { name: "Forest", from: 6.0, to: 7.3, fill: "#1b3024" },
+  { name: "Coastal Savannah", from: 4.6, to: 6.0, fill: "#172a2c" },
 ];
 
 const px = (lon: number) =>
@@ -54,15 +54,15 @@ export default function ZoneMap({ sites, lat, lon, onSelect }: Props) {
   const markerY = py(lat);
 
   return (
-    <section className="rounded-md border border-line bg-white/60 p-3">
+    <section className="border border-border bg-surface p-3">
       <div className="flex items-center justify-between">
-        <h2 className="text-[10px] font-bold uppercase tracking-[0.16em] text-ink/55">
+        <h2 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-text-secondary">
           Agro-ecological zones
         </h2>
         <button
           type="button"
           onClick={() => setOpen((value) => !value)}
-          className="rounded-sm border border-line px-2 py-0.5 text-[10px] font-semibold text-ink/60 lg:hidden"
+          className="border border-border px-2 py-0.5 text-[10px] font-semibold text-text-secondary transition hover:bg-elevated lg:hidden"
           aria-expanded={open}
         >
           {open ? "Hide map" : "Show map"}
@@ -83,7 +83,7 @@ export default function ZoneMap({ sites, lat, lon, onSelect }: Props) {
               </clipPath>
             </defs>
 
-            <rect width={WIDTH} height={HEIGHT} fill="#eef3ea" />
+            <rect width={WIDTH} height={HEIGHT} fill="#0d1117" />
             <g clipPath={`url(#${clipId})`}>
               {ZONES.map((zone) => (
                 <rect
@@ -101,8 +101,7 @@ export default function ZoneMap({ sites, lat, lon, onSelect }: Props) {
                   x={10}
                   y={(py(zone.to) + py(zone.from)) / 2}
                   fontSize={8}
-                  fill="#3c4a37"
-                  opacity={0.7}
+                  fill="#8b949e"
                 >
                   {zone.name}
                 </text>
@@ -112,7 +111,7 @@ export default function ZoneMap({ sites, lat, lon, onSelect }: Props) {
             <polygon
               points={outlinePoints}
               fill="none"
-              stroke="#5b6b52"
+              stroke="#30363d"
               strokeWidth={1.2}
               strokeLinejoin="round"
             />
@@ -128,19 +127,19 @@ export default function ZoneMap({ sites, lat, lon, onSelect }: Props) {
                   cx={px(site.lon)}
                   cy={py(site.lat)}
                   r={2.6}
-                  fill="#1e4030"
-                  stroke="#faf6ec"
+                  fill="#e6edf3"
+                  stroke="#0d1117"
                   strokeWidth={1}
                 />
                 <title>{`${site.name} — ${site.zone}`}</title>
               </g>
             ))}
 
-            <circle cx={markerX} cy={markerY} r={7} fill="none" stroke="#a86b13" strokeWidth={1.4} />
-            <circle cx={markerX} cy={markerY} r={3.4} fill="#a86b13" stroke="#faf6ec" strokeWidth={1.2} />
+            <circle cx={markerX} cy={markerY} r={7} fill="none" stroke="#e6912a" strokeWidth={1.4} />
+            <circle cx={markerX} cy={markerY} r={3.4} fill="#e6912a" stroke="#0d1117" strokeWidth={1.2} />
           </svg>
 
-          <p className="mt-1 text-[10px] leading-relaxed text-ink/45">
+          <p className="mt-1 text-[10px] leading-relaxed text-text-secondary">
             Schematic zones, not a survey boundary. {sites.length} reference sites are clickable.
           </p>
         </>

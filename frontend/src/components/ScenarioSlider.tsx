@@ -9,12 +9,15 @@ const LABELS = ["Low", "Normal", "High"] as const;
 
 export default function ScenarioSlider({ index, onChange, factor, updating }: Props) {
   return (
-    <section className="rounded-md border border-line bg-white/60 p-4">
+    <section className="border border-border bg-surface p-4">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <label htmlFor="rainfall-scenario" className="font-brand text-base text-ink">
+        <label
+          htmlFor="rainfall-scenario"
+          className="font-display text-lg tracking-[0.05em] text-text-primary"
+        >
           Adjust expected rainfall
         </label>
-        <span className="text-[11px] text-ink/55">
+        <span className="text-[11px] text-text-secondary">
           {updating ? "Rescoring…" : `POWER rainfall × ${factor.toFixed(1)}`}
         </span>
       </div>
@@ -33,13 +36,13 @@ export default function ScenarioSlider({ index, onChange, factor, updating }: Pr
 
       <div className="mt-1 flex justify-between text-[11px] font-semibold uppercase tracking-[0.1em]">
         {LABELS.map((label, i) => (
-          <span key={label} className={i === index ? "text-forest" : "text-ink/35"}>
+          <span key={label} className={i === index ? "text-accent-amber" : "text-text-secondary/60"}>
             {label}
           </span>
         ))}
       </div>
 
-      <p className="mt-2 text-[11px] leading-relaxed text-ink/50">
+      <p className="mt-2 text-[11px] leading-relaxed text-text-secondary">
         Low applies 0.7× to NASA POWER precipitation, High 1.3×, before the rain-fed water score is
         recalculated.
       </p>

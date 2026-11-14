@@ -122,11 +122,11 @@ export default function App() {
     setPoint({ lat, lon, label });
 
   return (
-    <div className="min-h-screen bg-cream">
+    <div className="min-h-screen bg-base text-text-primary">
       <Header />
 
       <main className="mx-auto max-w-6xl px-4 pb-16 pt-5 sm:px-6 lg:grid lg:grid-cols-[310px_minmax(0,1fr)] lg:items-start lg:gap-6">
-        <aside className="space-y-3">
+        <aside className="space-y-3 lg:border-r lg:border-border lg:bg-surface lg:pb-4 lg:pr-5 lg:pt-1">
           <LocationPanel
             point={point}
             onPoint={selectPoint}
@@ -146,7 +146,7 @@ export default function App() {
         </aside>
 
         <section className="mt-5 space-y-3 lg:mt-0">
-          <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] text-ink/45">
+          <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] text-text-secondary">
             <span>
               {rec
                 ? `${rec.location.zone} · ${rec.location.name}`
@@ -171,9 +171,9 @@ export default function App() {
           />
 
           <div className="flex items-baseline justify-between gap-3 pt-1">
-            <h2 className="font-brand text-lg text-ink">Rotation options</h2>
+            <h2 className="font-display text-lg tracking-[0.05em] text-text-primary">Rotation options</h2>
             {rec && (
-              <p className="text-[10px] leading-relaxed text-ink/45">
+              <p className="text-[10px] leading-relaxed text-text-secondary">
                 {rec.alternatives_above_baseline} alternative
                 {rec.alternatives_above_baseline === 1 ? "" : "s"} clear your rotation by ≥0.2
               </p>
@@ -181,7 +181,7 @@ export default function App() {
           </div>
 
           {recError && (
-            <div className="rounded-md border border-clay/30 bg-clay/5 px-4 py-3 text-sm text-clay">
+            <div className="border border-accent-amber bg-elevated px-4 py-3 text-sm text-accent-amber">
               {recError}
             </div>
           )}
@@ -189,7 +189,7 @@ export default function App() {
           {!rec && recLoading && (
             <div className="space-y-3" aria-busy="true">
               {[0, 1].map((key) => (
-                <div key={key} className="rounded-md border border-line bg-white/60 p-4">
+                <div key={key} className="border border-border bg-surface p-4">
                   <div className="skeleton h-24 w-24 rounded-full" />
                   <div className="skeleton mt-3 h-4 w-1/2" />
                   <div className="skeleton mt-2 h-3 w-2/3" />
@@ -212,17 +212,17 @@ export default function App() {
           </div>
 
           {rec?.narration && (
-            <section className="rounded-md border border-line bg-[#f4efe1] p-4">
-              <span className="rounded-full border border-ink/15 px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.12em] text-ink/55">
+            <section className="border border-border bg-surface p-4">
+              <span className="rounded-full border border-border bg-elevated px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.12em] text-text-secondary">
                 {rec.narration.generated
                   ? `AI-generated explanation · ${rec.narration.model}`
                   : "Rule-based summary"}
               </span>
-              <p className="mt-2 text-sm leading-relaxed text-ink/75">{rec.narration.text}</p>
+              <p className="mt-2 text-sm leading-relaxed text-text-primary">{rec.narration.text}</p>
             </section>
           )}
 
-          <footer className="border-t border-line pt-3 text-[10px] leading-relaxed text-ink/40">
+          <footer className="border-t border-border pt-3 text-[10px] leading-relaxed text-text-secondary">
             <p>
               Scores are deterministic: NASA POWER rainfall and temperature, FAO GAEZ suitability,
               ISRIC SoilGrids properties. Sankofa supports — it does not replace — farmer judgment.

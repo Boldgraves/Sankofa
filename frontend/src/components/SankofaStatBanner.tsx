@@ -14,12 +14,8 @@ interface Props {
 export default function SankofaStatBanner({ onset, loading, error }: Props) {
   if (loading) {
     return (
-      <div
-        className="w-full rounded-sm border-l-4 border-accent-deep bg-accent px-4 py-3"
-        aria-live="polite"
-        aria-busy="true"
-      >
-        <div className="skeleton h-4 w-3/4 max-w-md bg-white/40" />
+      <div className="w-full bg-accent-amber px-4 py-3" aria-live="polite" aria-busy="true">
+        <div className="skeleton h-4 w-3/4 max-w-md bg-base/20" />
         <span className="sr-only">Loading Sankofa Stat</span>
       </div>
     );
@@ -27,7 +23,7 @@ export default function SankofaStatBanner({ onset, loading, error }: Props) {
 
   if (error || !onset) {
     return (
-      <div className="w-full rounded-sm border border-line bg-sand px-4 py-3 text-sm text-ink/70">
+      <div className="w-full border border-border bg-surface px-4 py-3 text-sm text-text-secondary">
         Sankofa Stat unavailable right now — NASA POWER onset record could not be read for this
         point.
       </div>
@@ -46,7 +42,7 @@ export default function SankofaStatBanner({ onset, loading, error }: Props) {
 
   return (
     <div
-      className="w-full rounded-sm border-l-4 border-accent-deep bg-accent px-4 py-3 font-bold leading-snug text-white"
+      className="w-full bg-accent-amber px-4 py-3 font-semibold leading-snug text-[#0d1117]"
       title={detail}
       role="status"
     >

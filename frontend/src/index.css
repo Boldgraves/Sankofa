@@ -1,50 +1,70 @@
 @import "tailwindcss";
 
+:root {
+  --bg-base: #0d1117;
+  --bg-surface: #161b22;
+  --bg-elevated: #21262d;
+  --accent-blue: #1a6ebd;
+  --accent-amber: #e6912a;
+  --accent-green: #2ea44f;
+  --text-primary: #e6edf3;
+  --text-secondary: #8b949e;
+  --border: #30363d;
+}
+
 @theme {
-  --color-cream: #faf6ec;
-  --color-sand: #f1e6cf;
-  --color-line: #ded2b8;
-  --color-ink: #182319;
-  --color-forest: #1e4030;
-  --color-forest-soft: #2e5943;
-  --color-ochre: #a86b13;
-  --color-ochre-soft: #f4d79c;
-  --color-clay: #a24a2a;
-  --color-accent: #b5451b;
-  --color-accent-deep: #8e3512;
-  --font-display: "Fraunces", Georgia, serif;
-  --font-brand: "DM Serif Display", Georgia, serif;
+  --color-base: #0d1117;
+  --color-surface: #161b22;
+  --color-elevated: #21262d;
+  --color-accent-blue: #1a6ebd;
+  --color-accent-amber: #e6912a;
+  --color-accent-green: #2ea44f;
+  --color-text-primary: #e6edf3;
+  --color-text-secondary: #8b949e;
+  --color-border: #30363d;
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", "Inter", sans-serif;
 }
 
 html {
-  background-color: var(--color-cream);
+  background-color: var(--bg-base);
+  color-scheme: dark;
   scroll-behavior: smooth;
 }
 
 body {
   margin: 0;
+  background-color: var(--bg-base);
+  color: var(--text-primary);
   font-family: var(--font-sans);
-  color: var(--color-ink);
   -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2 {
+  font-family: var(--font-display);
+}
+
+::selection {
+  background-color: rgba(26, 110, 189, 0.45);
+  color: #ffffff;
 }
 
 @keyframes sankofa-pulse {
   0%,
   100% {
-    opacity: 0.55;
+    opacity: 0.4;
   }
   50% {
-    opacity: 1;
+    opacity: 0.85;
   }
 }
 
 .skeleton {
   animation: sankofa-pulse 1.4s ease-in-out infinite;
-  background-color: #e6dcc4;
-  border-radius: 4px;
+  background-color: #21262d;
 }
 
 .slider-track {
-  accent-color: #b5451b;
+  accent-color: var(--accent-amber);
 }

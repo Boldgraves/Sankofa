@@ -27,6 +27,8 @@ const DEMO_SITES = [
 
 const LEVELS: PriorityLevel[] = ["Low", "Medium", "High"];
 
+const FIELD = "border border-border bg-elevated text-text-primary outline-none focus:border-accent-blue";
+
 export default function LocationPanel({
   point,
   onPoint,
@@ -86,33 +88,33 @@ export default function LocationPanel({
 
   return (
     <div className="space-y-3">
-      <section className="rounded-md border border-line bg-white/60 p-4">
+      <section className="border border-border bg-surface p-4">
         <div className="flex items-baseline justify-between gap-2">
-          <h2 className="text-[10px] font-bold uppercase tracking-[0.16em] text-ink/55">
+          <h2 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-text-secondary">
             Field location
           </h2>
           {rec && (
-            <span className="rounded-full bg-forest/10 px-2 py-0.5 text-[10px] font-semibold text-forest">
+            <span className="rounded-full bg-accent-blue px-2 py-0.5 text-[10px] font-semibold text-white">
               {rec.location.zone}
             </span>
           )}
         </div>
 
-        <p className="mt-1 font-display text-lg leading-tight text-ink">{point.label}</p>
-        <p className="mt-0.5 font-mono text-[11px] tabular-nums text-ink/50">
+        <p className="mt-1 font-display text-lg leading-tight text-text-primary">{point.label}</p>
+        <p className="mt-0.5 font-mono text-[11px] tabular-nums text-text-secondary">
           {point.lat.toFixed(4)}, {point.lon.toFixed(4)}
         </p>
 
         <button
           type="button"
           onClick={useMyLocation}
-          className="mt-3 w-full rounded-sm bg-accent px-3 py-2 text-sm font-semibold text-white transition hover:bg-accent-deep"
+          className="mt-3 w-full bg-accent-blue px-3 py-2 text-sm font-semibold text-white transition hover:brightness-110"
         >
           {locating ? "Locating…" : "Use my location"}
         </button>
 
         <form onSubmit={submitSearch} className="mt-3">
-          <label htmlFor="place-search" className="text-[11px] text-ink/55">
+          <label htmlFor="place-search" className="text-[11px] text-text-secondary">
             Or search by place name
           </label>
           <div className="mt-1 flex gap-1.5">
@@ -121,19 +123,19 @@ export default function LocationPanel({
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               placeholder="e.g. Bolgatanga"
-              className="min-w-0 flex-1 rounded-sm border border-line bg-cream px-2.5 py-1.5 text-sm outline-none focus:border-forest"
+              className={`min-w-0 flex-1 px-2.5 py-1.5 text-sm placeholder:text-text-secondary/60 ${FIELD}`}
             />
             <button
               type="submit"
               disabled={searching}
-              className="rounded-sm border border-forest px-2.5 py-1.5 text-xs font-semibold text-forest transition hover:bg-forest hover:text-cream disabled:opacity-50"
+              className="border border-border px-2.5 py-1.5 text-xs font-semibold text-text-primary transition hover:bg-elevated disabled:opacity-50"
             >
               {searching ? "…" : "Search"}
             </button>
           </div>
         </form>
-        {searchError && <p className="mt-1 text-[11px] text-clay">{searchError}</p>}
-        {geoError && <p className="mt-1 text-[11px] text-clay">{geoError}</p>}
+        {searchError && <p className="mt-1 text-[11px] text-accent-amber">{searchError}</p>}
+        {geoError && <p className="mt-1 text-[11px] text-accent-amber">{geoError}</p>}
 
         <div className="mt-3 flex flex-wrap gap-1.5">
           {DEMO_SITES.map((site) => (
@@ -141,7 +143,7 @@ export default function LocationPanel({
               key={site.name}
               type="button"
               onClick={() => onPoint(site.lat, site.lon, site.name)}
-              className="rounded-full border border-line px-2 py-0.5 text-[10px] font-medium text-ink/60 transition hover:border-forest hover:text-forest"
+              className="rounded-full border border-border px-2 py-0.5 text-[10px] font-medium text-text-secondary transition hover:border-accent-amber hover:text-accent-amber"
             >
               {site.name}
             </button>
@@ -149,22 +151,26 @@ export default function LocationPanel({
         </div>
 
         {rec && (
-          <dl className="mt-3 grid grid-cols-2 gap-2 border-t border-line pt-3 text-[11px]">
+          <dl className="mt-3 grid grid-cols-2 gap-2 border-t border-border pt-3 text-[11px]">
             <div>
-              <dt className="text-ink/45">Season rainfall</dt>
-              <dd className="font-semibold tabular-nums">{rec.climate.seasonal_rainfall_mm} mm</dd>
+              <dt className="text-text-secondary">Season rainfall</dt>
+              <dd className="font-semibold tabular-nums text-text-primary">
+                {rec.climate.seasonal_rainfall_mm} mm
+              </dd>
             </div>
             <div>
-              <dt className="text-ink/45">Mean temp.</dt>
-              <dd className="font-semibold tabular-nums">{rec.climate.mean_temp_c} °C</dd>
+              <dt className="text-text-secondary">Mean temp.</dt>
+              <dd className="font-semibold tabular-nums text-text-primary">
+                {rec.climate.mean_temp_c} °C
+              </dd>
             </div>
-            <div className="col-span-2 text-[10px] leading-relaxed text-ink/40">
+            <div className="col-span-2 text-[10px] leading-relaxed text-text-secondary/80">
               {rec.climate.source} · {rec.climate.period} ·{" "}
               {rec.location.cached
                 ? "reference site (cached)"
                 : `${rec.location.distance_to_site_km} km from ${rec.location.nearest_site}`}
             </div>
-            <div className="col-span-2 text-[10px] leading-relaxed text-ink/40">
+            <div className="col-span-2 text-[10px] leading-relaxed text-text-secondary/80">
               {rec.location.soil.texture} · pH {rec.location.soil.ph} · SOC{" "}
               {rec.location.soil.soc_g_kg} g/kg · {rec.location.soil.source}
             </div>
@@ -172,19 +178,19 @@ export default function LocationPanel({
         )}
       </section>
 
-      <section className="rounded-md border border-line bg-white/60 p-4">
-        <h2 className="text-[10px] font-bold uppercase tracking-[0.16em] text-ink/55">
+      <section className="border border-border bg-surface p-4">
+        <h2 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-text-secondary">
           Your field
         </h2>
 
-        <label htmlFor="current-crop" className="mt-2 block text-[11px] text-ink/55">
+        <label htmlFor="current-crop" className="mt-2 block text-[11px] text-text-secondary">
           Current crop
         </label>
         <select
           id="current-crop"
           value={currentCrop}
           onChange={(event) => onCurrentCrop(event.target.value)}
-          className="mt-1 w-full rounded-sm border border-line bg-cream px-2.5 py-1.5 text-sm outline-none focus:border-forest"
+          className={`mt-1 w-full px-2.5 py-1.5 text-sm ${FIELD}`}
         >
           <option value="">Not set</option>
           {crops.map((crop) => (
@@ -194,19 +200,19 @@ export default function LocationPanel({
           ))}
         </select>
 
-        <p className="mt-3 text-[10px] font-bold uppercase tracking-[0.16em] text-ink/55">
+        <p className="mt-3 text-[11px] font-semibold uppercase tracking-[0.12em] text-text-secondary">
           Priorities
         </p>
         {(["water", "soil", "market"] as const).map((key) => (
           <div key={key} className="mt-1.5 flex items-center justify-between gap-2">
-            <label htmlFor={`priority-${key}`} className="text-xs capitalize text-ink/70">
+            <label htmlFor={`priority-${key}`} className="text-xs capitalize text-text-secondary">
               {key === "market" ? "Market access" : `${key} security`}
             </label>
             <select
               id={`priority-${key}`}
               value={priorities[key]}
               onChange={(event) => onPriority(key, event.target.value as PriorityLevel)}
-              className="rounded-sm border border-line bg-cream px-2 py-1 text-xs outline-none focus:border-forest"
+              className={`px-2 py-1 text-xs ${FIELD}`}
             >
               {LEVELS.map((level) => (
                 <option key={level} value={level}>

@@ -86,3 +86,15 @@ Google Gemini `gemini-3.5-flash` is used in production for plain-language narrat
 - The Sankofa Stat banner and the NDVI chart load in parallel with `/recommend`, so a slow NASA response never blocks the rotation cards.
 - `backend/app/data/onset_fallbacks.json` holds real NASA POWER 2001-2024 onset series captured for the seven reference sites and served when POWER is unreachable.
 - `backend/app/data/ndvi_series.json` holds the bundled 16-day NDVI composites for those same sites (regenerate with `backend/scripts/gen_ndvi.py`, or swap it for an APPEEARS export); other points show the "tile overlay active" fallback.
+
+## Scoring transparency
+
+| Sub-score | Data source | Weight (default) |
+|---|---|---|
+| Rain fit | NASA POWER PRECTOTCORR vs crop water need | Farmer water priority |
+| Soil fit | SoilGrids pH + SOC vs crop tolerances | Farmer soil priority |
+| GAEZ suitability | FAO agro-ecological zone match | Equal weight |
+| Market value | Crop library market_value field | Farmer market priority |
+
+Tiebreak order: water sub-score → soil sub-score → market sub-score.
+Baseline (current rotation) always appears first; alternatives must score ≥0.2 above baseline to be listed above it.

@@ -68,6 +68,8 @@ export interface Narration {
   text: string;
   generated: boolean;
   model: string | null;
+  finish_reason?: string | null;
+  cached?: boolean;
 }
 
 export interface RecommendResponse {

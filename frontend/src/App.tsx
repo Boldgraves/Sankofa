@@ -216,7 +216,7 @@ export default function App() {
               <span className="rounded-full border border-ink/15 px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.12em] text-ink/55">
                 {rec.narration.generated
                   ? `AI-generated explanation · ${rec.narration.model}`
-                  : "Rule-based summary (no AI key configured)"}
+                  : "Rule-based summary"}
               </span>
               <p className="mt-2 text-sm leading-relaxed text-ink/75">{rec.narration.text}</p>
             </section>

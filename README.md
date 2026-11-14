@@ -78,7 +78,7 @@ Optional: copy `backend/.env.example` to `backend/.env` and add `GEMINI_API_KEY`
 
 ## AI Use
 
-Google Gemini `gemini-2.5-flash` is used in production for plain-language narration of deterministic scores only. All AI-generated explanation text is labelled in the UI. Generative AI coding assistants were used during development to accelerate boilerplate creation and API integration.
+Google Gemini `gemini-3.5-flash` is used in production for plain-language narration of deterministic scores only. All AI-generated explanation text is labelled in the UI. Generative AI coding assistants were used during development to accelerate boilerplate creation and API integration.
 
 ## Notes for judges
 

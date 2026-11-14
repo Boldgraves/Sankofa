@@ -13,12 +13,18 @@ Endpoints
 from __future__ import annotations
 
 import logging
+from pathlib import Path
 
 import httpx
+from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 
-from . import ndvi_data, onset, scoring
+# Read backend/.env (if present) before anything reads os.environ. Real
+# environment variables always win, so a deployed secret is never overridden.
+load_dotenv(Path(__file__).resolve().parents[1] / ".env", override=False)
+
+from . import ndvi_data, onset, scoring  # noqa: E402
 from .gemini_client import narrate
 from .locations import CACHED_LOCATIONS, CROPS, location_summary
 from .nasa_power import seasonal_climate

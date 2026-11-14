@@ -16,7 +16,7 @@ import httpx
 
 log = logging.getLogger("sankofa.gemini")
 
-GEMINI_MODEL = "gemini-2.5-flash"
+GEMINI_MODEL = "gemini-3.5-flash"
 ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
 
 
@@ -55,13 +55,13 @@ def narrate(cards: list[dict], location: dict, climate: dict) -> dict:
     )
 
     try:
-        with httpx.Client(timeout=8.0) as client:
+        with httpx.Client(timeout=15.0) as client:
             response = client.post(
                 ENDPOINT.format(model=GEMINI_MODEL),
                 headers={"x-goog-api-key": api_key},
                 json={
                     "contents": [{"parts": [{"text": prompt}]}],
-                    "generationConfig": {"temperature": 0.3, "maxOutputTokens": 160},
+                    "generationConfig": {"temperature": 0.3, "maxOutputTokens": 512},
                 },
             )
             response.raise_for_status()

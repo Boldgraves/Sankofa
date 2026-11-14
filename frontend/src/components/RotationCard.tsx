@@ -11,6 +11,8 @@ const DIMENSIONS: Array<[keyof SubScores, string]> = [
 export default function RotationCard({ card }: { card: RotationCardData }) {
   const baseline = card.is_baseline;
   const gaps = card.confidence.data_gaps;
+  const showLocalData = gaps.length > 0 && !card.confidence.needs_local_verification;
+  const showConfidenceBadge = showLocalData || card.confidence.needs_local_verification;
 
   return (
     <article
@@ -23,6 +25,21 @@ export default function RotationCard({ card }: { card: RotationCardData }) {
         <ScoreGauge score={card.score} />
 
         <div className="min-w-0 flex-1">
+          {showConfidenceBadge && (
+            <div className="mb-2 flex flex-wrap gap-1.5">
+              {showLocalData && (
+                <span className="rounded-full border border-border bg-elevated px-2 py-0.5 text-[9px] font-semibold uppercase tracking-[0.1em] text-text-secondary">
+                  Needs local data
+                </span>
+              )}
+              {card.confidence.needs_local_verification && (
+                <span className="rounded-full bg-accent-amber px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.1em] text-[#0d1117]">
+                  Needs local verification
+                </span>
+              )}
+            </div>
+          )}
+
           <div className="flex items-start justify-between gap-2">
             <div className="min-w-0">
               {baseline && (
@@ -57,16 +74,6 @@ export default function RotationCard({ card }: { card: RotationCardData }) {
                     {card.score_delta?.toFixed(2)} vs yours
                   </span>
                 )
-              )}
-              {gaps.length > 0 && !card.confidence.needs_local_verification && (
-                <span className="rounded-full border border-border bg-elevated px-2 py-0.5 text-[9px] font-semibold uppercase tracking-[0.1em] text-text-secondary">
-                  Needs local data
-                </span>
-              )}
-              {card.confidence.needs_local_verification && (
-                <span className="rounded-full bg-accent-amber px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.1em] text-[#0d1117]">
-                  Needs local verification
-                </span>
               )}
             </div>
           </div>

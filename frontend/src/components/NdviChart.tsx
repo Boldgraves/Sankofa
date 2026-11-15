@@ -1,7 +1,8 @@
 import {
+  Bar,
+  BarChart,
   CartesianGrid,
-  Line,
-  LineChart,
+  Cell,
   ReferenceLine,
   ResponsiveContainer,
   Tooltip,
@@ -16,6 +17,11 @@ interface Props {
   loading: boolean;
 }
 
+const STRESS = 0.3;
+const COLOR_STRESSED = "#E6912A";
+const COLOR_HEALTHY = "#2D9E2D";
+const COLOR_THRESHOLD = "#f85149";
+
 export default function NdviChart({ data, loading }: Props) {
   const palette = paletteFor(useTheme());
   const hasSeries = Boolean(data?.dates && data?.ndvi && data.ndvi.length > 1);
@@ -23,7 +29,7 @@ export default function NdviChart({ data, loading }: Props) {
   const points = hasSeries
     ? (data!.dates as string[]).map((date, index) => ({
         date,
-        ndvi: (data!.ndvi as number[])[index],
+        value: (data!.ndvi as number[])[index],
       }))
     : [];
 
@@ -53,7 +59,7 @@ export default function NdviChart({ data, loading }: Props) {
         <>
           <div className="mt-2 h-[200px] w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={points} margin={{ top: 8, right: 12, bottom: 0, left: -22 }}>
+              <BarChart data={points} margin={{ top: 8, right: 12, bottom: 0, left: -22 }}>
                 <CartesianGrid stroke={palette.chartGrid} strokeDasharray="2 4" vertical={false} />
                 <XAxis
                   dataKey="date"
@@ -71,6 +77,7 @@ export default function NdviChart({ data, loading }: Props) {
                   tickLine={false}
                 />
                 <Tooltip
+                  cursor={{ fill: palette.chartGrid, fillOpacity: 0.35 }}
                   contentStyle={{
                     borderRadius: 4,
                     border: `1px solid ${palette.tooltipBorder}`,
@@ -78,26 +85,30 @@ export default function NdviChart({ data, loading }: Props) {
                     background: palette.tooltipBg,
                     color: palette.tooltipText,
                   }}
-                  itemStyle={{ color: "#2ea44f" }}
                   labelStyle={{ color: palette.chartAxis }}
                   labelFormatter={(value) => String(value)}
                   formatter={(value) => [String(value), "NDVI"]}
                 />
                 <ReferenceLine
-                  y={0.3}
-                  stroke="#e6912a"
+                  y={STRESS}
+                  stroke={COLOR_THRESHOLD}
                   strokeDasharray="4 3"
-                  label={{ value: "0.3 stress", position: "insideTopRight", fill: "#e6912a", fontSize: 10 }}
+                  label={{
+                    value: "0.3 stress",
+                    position: "insideTopRight",
+                    fill: COLOR_THRESHOLD,
+                    fontSize: 10,
+                  }}
                 />
-                <Line
-                  type="monotone"
-                  dataKey="ndvi"
-                  stroke="#2ea44f"
-                  strokeWidth={1.8}
-                  dot={false}
-                  isAnimationActive={false}
-                />
-              </LineChart>
+                <Bar dataKey="value" isAnimationActive={false}>
+                  {points.map((point) => (
+                    <Cell
+                      key={point.date}
+                      fill={point.value < STRESS ? COLOR_STRESSED : COLOR_HEALTHY}
+                    />
+                  ))}
+                </Bar>
+              </BarChart>
             </ResponsiveContainer>
           </div>
           <div className="mt-1 flex flex-wrap items-center justify-between gap-2 text-[10px] text-text-secondary">

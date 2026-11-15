@@ -204,22 +204,35 @@ export default function LocationPanel({
           Priorities
         </p>
         {(["water", "soil", "market"] as const).map((key) => (
-          <div key={key} className="mt-1.5 flex items-center justify-between gap-2">
-            <label htmlFor={`priority-${key}`} className="text-xs capitalize text-text-secondary">
+          <div key={key} className="mt-2">
+            <span id={`priority-${key}-label`} className="text-xs capitalize text-text-secondary">
               {key === "market" ? "Market access" : `${key} security`}
-            </label>
-            <select
-              id={`priority-${key}`}
-              value={priorities[key]}
-              onChange={(event) => onPriority(key, event.target.value as PriorityLevel)}
-              className={`px-2 py-1 text-xs ${FIELD}`}
+            </span>
+            <div
+              role="group"
+              aria-labelledby={`priority-${key}-label`}
+              className="mt-1 grid grid-cols-3 gap-1"
             >
-              {LEVELS.map((level) => (
-                <option key={level} value={level}>
-                  {level}
-                </option>
-              ))}
-            </select>
+              {LEVELS.map((level) => {
+                const active = priorities[key] === level;
+                return (
+                  <button
+                    key={level}
+                    type="button"
+                    aria-pressed={active}
+                    onClick={() => onPriority(key, level)}
+                    className={[
+                      "border px-1 py-1 text-[11px] font-semibold transition",
+                      active
+                        ? "border-accent-amber bg-accent-amber text-[#0d1117]"
+                        : "border-border bg-elevated text-text-secondary hover:text-text-primary",
+                    ].join(" ")}
+                  >
+                    {level}
+                  </button>
+                );
+              })}
+            </div>
           </div>
         ))}
       </section>

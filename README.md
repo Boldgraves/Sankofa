@@ -18,28 +18,7 @@ Seven reference sites have cached onset and NDVI series, so the demo still works
 
 ## Architecture
 
-```
-                Browser — React + Vite + Recharts
-        location (GPS / Nominatim) · current crop · priorities · rainfall scenario
-                                    │
-        ┌───────────────────────────┼────────────────────────────┐
-        │ /recommend                │ /onset                     │ /ndvi-history
-        ▼                           ▼                            ▼
-   ┌───────────────────────────────────────────────────────────────────┐
-   │ FastAPI  (backend/app)                                            │
-   │                                                                   │
-   │  nasa_power.py  ──► NASA POWER monthly PRECTOTCORR + T2M  (cache) │
-   │  onset.py       ──► NASA POWER daily PRECTOTCORR 2001-2024        │
-   │                     └─ 10-day rolling sum > 20 mm after 1 March   │
-   │  ndvi_data.py   ──► MODIS Terra 16-day NDVI composites            │
-   │  scoring.py     ──► water · soil · suitability · market · risk    │
-   │  gemini_client.py ► narration of already-computed scores only     │
-   └───────────────────────────────────────────────────────────────────┘
-                                    │
-                                    ▼
-            Ranked rotation cards · onset banner · NDVI chart
-              (baseline card always first, alternatives +0.2 to lead)
-```
+![Sankofa architecture: browser inputs call four FastAPI endpoints, which use NASA POWER, MODIS NDVI, scoring, Gemini narration and Khaya translation to produce ranked cards, an onset banner and an NDVI bar chart](docs/architecture.svg)
 
 ## NASA Data Used
 

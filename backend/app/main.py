@@ -12,6 +12,7 @@ Endpoints
 
 from __future__ import annotations
 
+import asyncio
 import logging
 from pathlib import Path
 
@@ -26,6 +27,7 @@ load_dotenv(Path(__file__).resolve().parents[1] / ".env", override=False)
 
 from . import ndvi_data, onset, scoring  # noqa: E402
 from .gemini_client import narrate
+from .khaya_client import SUPPORTED_LANGUAGES, translate_text
 from .locations import CACHED_LOCATIONS, CROPS, location_summary
 from .nasa_power import seasonal_climate
 
@@ -79,9 +81,16 @@ def recommend(
     soil_priority: str = Query("Medium"),
     market_priority: str = Query("Medium"),
     rainfall_factor: float = Query(1.0, ge=0.5, le=1.5, description="Scenario multiplier on POWER rainfall"),
+    language: str = Query("eng", description="Narration language: eng, twi, ewe, gaa, fat, dag, gur, kus"),
 ) -> dict:
     if current_crop is not None and current_crop not in CROPS:
         raise HTTPException(status_code=400, detail=f"unknown current_crop '{current_crop}'")
+
+    if language not in SUPPORTED_LANGUAGES:
+        raise HTTPException(
+            status_code=400,
+            detail=f"language must be one of {', '.join(SUPPORTED_LANGUAGES)}",
+        )
 
     priorities = {
         "water": _priority(water_priority, "water_priority"),
@@ -103,7 +112,19 @@ def recommend(
         rainfall_factor=rainfall_factor,
     )
     result["location"] = {**location, **result["location"]}
-    result["narration"] = narrate(result["cards"], result["location"], result["climate"])
+    narration = narrate(result["cards"], result["location"], result["climate"])
+    # This endpoint is sync (POWER/Nominatim are blocking httpx clients), so it
+    # runs in FastAPI's threadpool: asyncio.run is safe here and keeps Khaya's
+    # async client unchanged.
+    translation = asyncio.run(translate_text(narration["text"], language))
+    translated = translation != narration["text"]
+    narration["text"] = translation
+    result["narration"] = narration
+    result["language"] = {
+        "code": language,
+        "label": SUPPORTED_LANGUAGES[language],
+        "translated": translated,
+    }
     result["scenario"] = {
         "rainfall_factor": rainfall_factor,
         "label": "Low" if rainfall_factor < 0.95 else "High" if rainfall_factor > 1.05 else "Normal",

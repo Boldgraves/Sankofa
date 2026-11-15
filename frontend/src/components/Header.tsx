@@ -1,11 +1,24 @@
 import type { Theme } from "../theme";
 
+export const LANGUAGE_OPTIONS = [
+  { code: "eng", label: "English" },
+  { code: "twi", label: "Twi" },
+  { code: "ewe", label: "Ewe" },
+  { code: "gaa", label: "Ga" },
+  { code: "fat", label: "Fante" },
+  { code: "dag", label: "Dagbani" },
+  { code: "gur", label: "Gurene" },
+  { code: "kus", label: "Kusaal" },
+] as const;
+
 interface Props {
   theme: Theme;
   onToggle: () => void;
+  language: string;
+  onLanguage: (code: string) => void;
 }
 
-export default function Header({ theme, onToggle }: Props) {
+export default function Header({ theme, onToggle, language, onLanguage }: Props) {
   const nextTheme = theme === "dark" ? "light" : "dark";
 
   return (
@@ -25,6 +38,21 @@ export default function Header({ theme, onToggle }: Props) {
             NASA Space Apps Challenge 2026 · Field Shift
             <br className="hidden sm:block" /> CypherSpace · Takoradi, Ghana
           </p>
+
+          <label className="shrink-0">
+            <span className="sr-only">Narration language</span>
+            <select
+              value={language}
+              onChange={(event) => onLanguage(event.target.value)}
+              className="h-9 border border-border bg-surface px-2 text-[11px] font-medium text-text-secondary transition hover:text-text-primary focus:border-accent-amber focus:outline-none"
+            >
+              {LANGUAGE_OPTIONS.map((option) => (
+                <option key={option.code} value={option.code}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </label>
 
           <button
             type="button"

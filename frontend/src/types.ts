@@ -85,6 +85,7 @@ export interface RecommendResponse {
   disclaimer: string;
   soil_confidence: string;
   narration: Narration;
+  language?: { code: string; label: string; translated: boolean };
   scenario: { rainfall_factor: number; label: string };
 }
 

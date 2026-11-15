@@ -33,6 +33,7 @@ export default function App() {
     market: PriorityLevel;
   }>({ water: "Medium", soil: "Medium", market: "Medium" });
   const [scenarioIndex, setScenarioIndex] = useState<0 | 1 | 2>(1);
+  const [language, setLanguage] = useState("eng");
 
   const [rec, setRec] = useState<RecommendResponse | null>(null);
   const [recLoading, setRecLoading] = useState(true);
@@ -110,6 +111,7 @@ export default function App() {
         currentCrop,
         priorities,
         rainfallFactor,
+        language,
       },
       controller.signal,
     )
@@ -122,7 +124,7 @@ export default function App() {
       });
 
     return () => controller.abort();
-  }, [point.lat, point.lon, currentCrop, priorities, rainfallFactor]);
+  }, [point.lat, point.lon, currentCrop, priorities, rainfallFactor, language]);
 
   const orderedCards = useMemo(() => {
     if (!rec) return [];
@@ -139,7 +141,12 @@ export default function App() {
     <div
       className={`min-h-screen bg-base text-text-primary${theme === "light" ? " theme-light" : ""}`}
     >
-      <Header theme={theme} onToggle={() => setTheme(theme === "dark" ? "light" : "dark")} />
+      <Header
+        theme={theme}
+        onToggle={() => setTheme(theme === "dark" ? "light" : "dark")}
+        language={language}
+        onLanguage={setLanguage}
+      />
 
       <main className="mx-auto max-w-6xl px-4 pb-16 pt-5 sm:px-6 lg:grid lg:grid-cols-[310px_minmax(0,1fr)] lg:items-start lg:gap-6">
         <aside className="space-y-3 lg:border-r lg:border-border lg:bg-surface lg:pb-4 lg:pr-5 lg:pt-1">

@@ -33,6 +33,7 @@ export interface RecommendParams {
   currentCrop: string;
   priorities: { water: PriorityLevel; soil: PriorityLevel; market: PriorityLevel };
   rainfallFactor: number;
+  language: string;
 }
 
 export function fetchRecommend(params: RecommendParams, signal?: AbortSignal) {
@@ -43,6 +44,7 @@ export function fetchRecommend(params: RecommendParams, signal?: AbortSignal) {
     soil_priority: params.priorities.soil,
     market_priority: params.priorities.market,
     rainfall_factor: String(params.rainfallFactor),
+    language: params.language,
   });
   if (params.currentCrop) query.set("current_crop", params.currentCrop);
   return getJson<RecommendResponse>(`/recommend?${query.toString()}`, signal);

@@ -72,9 +72,11 @@ npm run dev          # http://localhost:5173
 
 The UI proxies `/api/*` to `http://127.0.0.1:8000`, so both commands are all you need.
 
-API: `GET /recommend?lat&lon&current_crop&water_priority&soil_priority&market_priority&rainfall_factor`, `GET /onset?lat&lon`, `GET /ndvi-history?lat&lon`.
+API: `GET /recommend?lat&lon&current_crop&water_priority&soil_priority&market_priority&rainfall_factor&language`, `GET /onset?lat&lon`, `GET /ndvi-history?lat&lon`.
 
-Optional: copy `backend/.env.example` to `backend/.env` and add `GEMINI_API_KEY` to enable Gemini narration. Without a key, Sankofa serves a rule-based summary and labels it as such — scores never depend on the key.
+`language` defaults to `eng` and accepts `eng`, `twi`, `ewe`, `gaa`, `fat`, `dag`, `gur`, `kus`; the narration is translated with Khaya AI after it is generated.
+
+Optional: copy `backend/.env.example` to `backend/.env` and add `GEMINI_API_KEY` to enable Gemini narration. Without a key, Sankofa serves a rule-based summary and labels it as such — scores never depend on the key. Add `KHAYA_API_KEY` to translate narration into Ghanaian languages; without it the text stays in English.
 
 ## AI Use
 

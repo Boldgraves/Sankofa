@@ -1,7 +1,16 @@
-export default function Header() {
+import type { Theme } from "../theme";
+
+interface Props {
+  theme: Theme;
+  onToggle: () => void;
+}
+
+export default function Header({ theme, onToggle }: Props) {
+  const nextTheme = theme === "dark" ? "light" : "dark";
+
   return (
     <header className="border-b border-border bg-surface">
-      <div className="mx-auto flex max-w-6xl flex-wrap items-end justify-between gap-3 px-4 py-4 sm:px-6">
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-6">
         <div>
           <h1 className="font-display text-2xl font-semibold leading-none tracking-tight text-text-primary">
             Sankofa
@@ -11,10 +20,41 @@ export default function Header() {
           </p>
         </div>
 
-        <p className="text-[11px] leading-relaxed text-text-secondary lg:text-right">
-          NASA Space Apps Challenge 2026 · Field Shift
-          <br className="hidden sm:block" /> CypherSpace · Takoradi, Ghana
-        </p>
+        <div className="flex items-center gap-3">
+          <p className="text-[11px] leading-relaxed text-text-secondary lg:text-right">
+            NASA Space Apps Challenge 2026 · Field Shift
+            <br className="hidden sm:block" /> CypherSpace · Takoradi, Ghana
+          </p>
+
+          <button
+            type="button"
+            onClick={onToggle}
+            aria-label={`Switch to ${nextTheme} mode`}
+            title={`Switch to ${nextTheme} mode`}
+            className="flex h-9 w-9 shrink-0 items-center justify-center border border-border text-text-secondary transition hover:bg-elevated hover:text-text-primary"
+          >
+            {theme === "light" ? (
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <circle cx="12" cy="12" r="4.2" stroke="currentColor" strokeWidth="1.7" />
+                <path
+                  d="M12 2.6v2.2M12 19.2v2.2M2.6 12h2.2M19.2 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M18.7 5.3l-1.6 1.6M6.9 17.1l-1.6 1.6"
+                  stroke="currentColor"
+                  strokeWidth="1.7"
+                  strokeLinecap="round"
+                />
+              </svg>
+            ) : (
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path
+                  d="M20.5 14.8A8.6 8.6 0 1 1 9.2 3.5a6.9 6.9 0 0 0 11.3 11.3Z"
+                  stroke="currentColor"
+                  strokeWidth="1.7"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            )}
+          </button>
+        </div>
       </div>
     </header>
   );

@@ -32,6 +32,30 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Light theme: override both the raw tokens and the Tailwind colour tokens so
+   every utility class resolves to the light palette. */
+.theme-light {
+  --bg-base: #f5f5f5;
+  --bg-surface: #ffffff;
+  --bg-elevated: #f0f0f0;
+  --accent-blue: #1a6ebd;
+  --accent-amber: #e6912a;
+  --accent-green: #2ea44f;
+  --text-primary: #1a1a1a;
+  --text-secondary: #5a5a5a;
+  --border: #e0e0e0;
+  --color-base: #f5f5f5;
+  --color-surface: #ffffff;
+  --color-elevated: #f0f0f0;
+  --color-accent-blue: #1a6ebd;
+  --color-accent-amber: #e6912a;
+  --color-accent-green: #2ea44f;
+  --color-text-primary: #1a1a1a;
+  --color-text-secondary: #5a5a5a;
+  --color-border: #e0e0e0;
+  color-scheme: light;
+}
+
 body {
   margin: 0;
   background-color: var(--bg-base);
@@ -63,6 +87,10 @@ h2 {
 .skeleton {
   animation: sankofa-pulse 1.4s ease-in-out infinite;
   background-color: #21262d;
+}
+
+.theme-light .skeleton {
+  background-color: #e3e3e3;
 }
 
 .slider-track {

@@ -8,6 +8,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { paletteFor, useTheme } from "../theme";
 import type { NdviResponse } from "../types";
 
 interface Props {
@@ -16,6 +17,7 @@ interface Props {
 }
 
 export default function NdviChart({ data, loading }: Props) {
+  const palette = paletteFor(useTheme());
   const hasSeries = Boolean(data?.dates && data?.ndvi && data.ndvi.length > 1);
 
   const points = hasSeries
@@ -52,32 +54,32 @@ export default function NdviChart({ data, loading }: Props) {
           <div className="mt-2 h-[200px] w-full">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={points} margin={{ top: 8, right: 12, bottom: 0, left: -22 }}>
-                <CartesianGrid stroke="#21262d" strokeDasharray="2 4" vertical={false} />
+                <CartesianGrid stroke={palette.chartGrid} strokeDasharray="2 4" vertical={false} />
                 <XAxis
                   dataKey="date"
                   ticks={yearTicks}
                   tickFormatter={(value: string) => value.slice(0, 4)}
-                  tick={{ fill: "#8b949e", fontSize: 11 }}
-                  axisLine={{ stroke: "#30363d" }}
+                  tick={{ fill: palette.chartAxis, fontSize: 11 }}
+                  axisLine={{ stroke: palette.chartGrid }}
                   tickLine={false}
                 />
                 <YAxis
                   domain={[0, 1]}
                   ticks={[0, 0.25, 0.5, 0.75, 1]}
-                  tick={{ fill: "#8b949e", fontSize: 11 }}
+                  tick={{ fill: palette.chartAxis, fontSize: 11 }}
                   axisLine={false}
                   tickLine={false}
                 />
                 <Tooltip
                   contentStyle={{
                     borderRadius: 4,
-                    border: "1px solid #30363d",
+                    border: `1px solid ${palette.tooltipBorder}`,
                     fontSize: 12,
-                    background: "#161b22",
-                    color: "#e6edf3",
+                    background: palette.tooltipBg,
+                    color: palette.tooltipText,
                   }}
                   itemStyle={{ color: "#2ea44f" }}
-                  labelStyle={{ color: "#8b949e" }}
+                  labelStyle={{ color: palette.chartAxis }}
                   labelFormatter={(value) => String(value)}
                   formatter={(value) => [String(value), "NDVI"]}
                 />

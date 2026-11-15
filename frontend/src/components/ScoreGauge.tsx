@@ -1,4 +1,5 @@
 import { PolarAngleAxis, RadialBar, RadialBarChart } from "recharts";
+import { paletteFor, useTheme } from "../theme";
 
 interface Props {
   score: number;
@@ -6,6 +7,8 @@ interface Props {
 }
 
 export default function ScoreGauge({ score, size = 96 }: Props) {
+  const palette = paletteFor(useTheme());
+
   return (
     <div className="relative shrink-0" style={{ width: size, height: size }}>
       <RadialBarChart
@@ -22,7 +25,7 @@ export default function ScoreGauge({ score, size = 96 }: Props) {
           dataKey="value"
           cornerRadius={12}
           fill="#1a6ebd"
-          background={{ fill: "#21262d" }}
+          background={{ fill: palette.gaugeTrack }}
           isAnimationActive={false}
         />
       </RadialBarChart>

@@ -13,6 +13,9 @@ export default function RotationCard({ card }: { card: RotationCardData }) {
   const gaps = card.confidence.data_gaps;
   const showLocalData = gaps.length > 0 && !card.confidence.needs_local_verification;
   const showConfidenceBadge = showLocalData || card.confidence.needs_local_verification;
+  const seasons = card.crop_names.length
+    ? Array.from({ length: 3 }, (_, index) => card.crop_names[index % card.crop_names.length])
+    : [];
 
   return (
     <article
@@ -43,8 +46,8 @@ export default function RotationCard({ card }: { card: RotationCardData }) {
           <div className="flex items-start justify-between gap-2">
             <div className="min-w-0">
               {baseline && (
-                <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-text-secondary">
-                  Your Current Rotation
+                <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-accent-amber">
+                  Your current practice
                 </p>
               )}
               <h3 className="font-display text-xl leading-tight text-text-primary">
@@ -55,28 +58,26 @@ export default function RotationCard({ card }: { card: RotationCardData }) {
               </p>
             </div>
 
-            <div className="flex shrink-0 flex-col items-end gap-1">
-              {baseline ? (
-                <span className="rounded-full border border-border bg-elevated px-2 py-0.5 text-[9px] font-semibold tracking-[0.12em] text-text-secondary">
-                  BASELINE
+            {!baseline && card.score_delta !== undefined && (
+              <div className="flex shrink-0 flex-col items-end gap-1">
+                <span
+                  className={[
+                    "rounded-full px-2 py-0.5 text-[10px] font-semibold",
+                    (card.score_delta ?? 0) > 0
+                      ? "bg-accent-green/15 text-accent-green"
+                      : "bg-elevated text-text-secondary",
+                  ].join(" ")}
+                >
+                  {(card.score_delta ?? 0) > 0 ? "+" : ""}
+                  {card.score_delta?.toFixed(2)} vs yours
                 </span>
-              ) : (
-                card.score_delta !== undefined && (
-                  <span
-                    className={[
-                      "rounded-full px-2 py-0.5 text-[10px] font-semibold",
-                      (card.score_delta ?? 0) > 0
-                        ? "bg-accent-green/15 text-accent-green"
-                        : "bg-elevated text-text-secondary",
-                    ].join(" ")}
-                  >
-                    {(card.score_delta ?? 0) > 0 ? "+" : ""}
-                    {card.score_delta?.toFixed(2)} vs yours
-                  </span>
-                )
-              )}
-            </div>
+              </div>
+            )}
           </div>
+
+          {seasons.length > 0 && (
+            <p className="mt-2 text-xs text-text-secondary">{seasons.join(" → ")}</p>
+          )}
 
           <dl className="mt-3 grid grid-cols-2 gap-x-4 gap-y-2">
             {DIMENSIONS.map(([key, label]) => (

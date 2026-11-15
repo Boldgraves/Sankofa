@@ -2,6 +2,7 @@ import { geoCentroid, geoMercator, geoPath } from "d3-geo";
 import type { Feature, FeatureCollection, Geometry, Polygon } from "geojson";
 import { useId, useState } from "react";
 import ghanaZones from "../data/ghana-zones.json";
+import { paletteFor, useTheme } from "../theme";
 import type { Site } from "../types";
 
 const WIDTH = 300;
@@ -15,9 +16,9 @@ interface RegionProps {
 }
 
 const ZONES: Array<{ key: ZoneKey; color: string; label: string[] }> = [
-  { key: "guinea", color: "#1A6EBD", label: ["Guinea Savannah"] },
-  { key: "transition", color: "#2EA44F", label: ["Transition"] },
-  { key: "coastal", color: "#E6912A", label: ["Coastal Savannah", "/ Forest"] },
+  { key: "guinea", color: "#1a6ebd", label: ["Guinea Savannah"] },
+  { key: "transition", color: "#2ea44f", label: ["Transition"] },
+  { key: "coastal", color: "#e6912a", label: ["Coastal Savannah", "/ Forest"] },
 ];
 
 const regions = ghanaZones as unknown as FeatureCollection<Polygon, RegionProps>;
@@ -52,6 +53,7 @@ export default function ZoneMap({ sites, lat, lon, onSelect }: Props) {
     typeof window === "undefined" ? true : window.innerWidth >= 1024,
   );
   const titleId = `ghana-map-${useId().replace(/:/g, "")}`;
+  const palette = paletteFor(useTheme());
   const [markerX, markerY] = project(lon, lat);
 
   return (
@@ -83,7 +85,7 @@ export default function ZoneMap({ sites, lat, lon, onSelect }: Props) {
               Savannah/Forest zones, with reference sites
             </title>
 
-            <rect width={WIDTH} height={HEIGHT} fill="#0d1117" />
+            <rect width={WIDTH} height={HEIGHT} fill={palette.mapBg} />
 
             {regions.features.map((feature) => {
               const colour = ZONES.find((zone) => zone.key === feature.properties.zone)?.color;
@@ -93,7 +95,7 @@ export default function ZoneMap({ sites, lat, lon, onSelect }: Props) {
                   d={pathFor(feature as Feature<Geometry, RegionProps>) ?? undefined}
                   fill={colour}
                   fillOpacity={0.4}
-                  stroke="#0d1117"
+                  stroke={palette.mapStroke}
                   strokeWidth={0.6}
                 >
                   <title>{`${feature.properties.name} — ${feature.properties.zone}`}</title>
@@ -132,8 +134,8 @@ export default function ZoneMap({ sites, lat, lon, onSelect }: Props) {
                   textAnchor="middle"
                   fontSize={7.5}
                   fontWeight={600}
-                  fill="#e6edf3"
-                  stroke="#0d1117"
+                  fill={palette.siteDot}
+                  stroke={palette.mapStroke}
                   strokeWidth={1.8}
                   paintOrder="stroke"
                   letterSpacing="0.3"
@@ -156,14 +158,14 @@ export default function ZoneMap({ sites, lat, lon, onSelect }: Props) {
                   className="cursor-pointer"
                 >
                   <circle cx={sx} cy={sy} r={9} fill="transparent" />
-                  <circle cx={sx} cy={sy} r={2.6} fill="#e6edf3" stroke="#0d1117" strokeWidth={1} />
+                  <circle cx={sx} cy={sy} r={2.6} fill={palette.siteDot} stroke={palette.siteDotStroke} strokeWidth={1} />
                   <title>{`${site.name} — ${site.zone}`}</title>
                 </g>
               );
             })}
 
             <circle cx={markerX} cy={markerY} r={7} fill="none" stroke="#e6912a" strokeWidth={1.4} />
-            <circle cx={markerX} cy={markerY} r={3.4} fill="#e6912a" stroke="#0d1117" strokeWidth={1.2} />
+            <circle cx={markerX} cy={markerY} r={3.4} fill="#e6912a" stroke={palette.mapStroke} strokeWidth={1.2} />
           </svg>
 
           <p className="mt-1 text-[10px] leading-relaxed text-text-secondary">

@@ -8,6 +8,7 @@ import RotationCard from "./components/RotationCard";
 import SankofaStatBanner from "./components/SankofaStatBanner";
 import ScenarioSlider from "./components/ScenarioSlider";
 import ZoneMap from "./components/ZoneMap";
+import { ThemeContext, THEME_STORAGE_KEY, type Theme } from "./theme";
 import type {
   CropOption,
   NdviResponse,
@@ -20,6 +21,10 @@ import type {
 const SCENARIOS = [0.7, 1.0, 1.3] as const;
 
 export default function App() {
+  const [theme, setTheme] = useState<Theme>(() => {
+    const stored = typeof window === "undefined" ? null : localStorage.getItem(THEME_STORAGE_KEY);
+    return stored === "light" ? "light" : "dark";
+  });
   const [point, setPoint] = useState<Point>({ lat: 9.4, lon: -0.85, label: "Tamale" });
   const [currentCrop, setCurrentCrop] = useState("");
   const [priorities, setPriorities] = useState<{
@@ -44,6 +49,14 @@ export default function App() {
   const [sites, setSites] = useState<Site[]>([]);
 
   const rainfallFactor = SCENARIOS[scenarioIndex];
+
+  useEffect(() => {
+    const background = theme === "light" ? "#f5f5f5" : "#0d1117";
+    localStorage.setItem(THEME_STORAGE_KEY, theme);
+    document.documentElement.style.colorScheme = theme;
+    document.documentElement.style.backgroundColor = background;
+    document.body.style.backgroundColor = background;
+  }, [theme]);
 
   useEffect(() => {
     fetchCrops()
@@ -122,8 +135,11 @@ export default function App() {
     setPoint({ lat, lon, label });
 
   return (
-    <div className="min-h-screen bg-base text-text-primary">
-      <Header />
+    <ThemeContext.Provider value={theme}>
+    <div
+      className={`min-h-screen bg-base text-text-primary${theme === "light" ? " theme-light" : ""}`}
+    >
+      <Header theme={theme} onToggle={() => setTheme(theme === "dark" ? "light" : "dark")} />
 
       <main className="mx-auto max-w-6xl px-4 pb-16 pt-5 sm:px-6 lg:grid lg:grid-cols-[310px_minmax(0,1fr)] lg:items-start lg:gap-6">
         <aside className="space-y-3 lg:border-r lg:border-border lg:bg-surface lg:pb-4 lg:pr-5 lg:pt-1">
@@ -235,5 +251,6 @@ export default function App() {
         </section>
       </main>
     </div>
+    </ThemeContext.Provider>
   );
 }

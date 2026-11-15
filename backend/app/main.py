@@ -45,6 +45,21 @@ PRIORITY_LEVELS = {"low": "Low", "medium": "Medium", "high": "High"}
 NOMINATIM_URL = "https://nominatim.openstreetmap.org/search"
 
 
+def _narrate(cards: list[dict], location: dict, climate: dict, language: str) -> dict:
+    """Narration in the requested language, whatever produced the English text.
+
+    narrate() returns either Gemini output or the rule-based fallback, and both
+    flow through Khaya when a non-English language is requested. This endpoint is
+    sync (POWER/Nominatim use blocking httpx clients) so it runs in FastAPI's
+    threadpool: asyncio.run is safe here and keeps Khaya's async client unchanged.
+    """
+    narration = narrate(cards, location, climate)
+    english = narration["text"]
+    narration["text"] = asyncio.run(translate_text(english, language))
+    narration["translated"] = narration["text"] != english
+    return narration
+
+
 def _priority(value: str, field: str) -> str:
     level = PRIORITY_LEVELS.get(value.strip().lower())
     if not level:
@@ -112,18 +127,14 @@ def recommend(
         rainfall_factor=rainfall_factor,
     )
     result["location"] = {**location, **result["location"]}
-    narration = narrate(result["cards"], result["location"], result["climate"])
-    # This endpoint is sync (POWER/Nominatim are blocking httpx clients), so it
-    # runs in FastAPI's threadpool: asyncio.run is safe here and keeps Khaya's
-    # async client unchanged.
-    translation = asyncio.run(translate_text(narration["text"], language))
-    translated = translation != narration["text"]
-    narration["text"] = translation
+    narration = _narrate(
+        result["cards"], result["location"], result["climate"], language
+    )
     result["narration"] = narration
     result["language"] = {
         "code": language,
         "label": SUPPORTED_LANGUAGES[language],
-        "translated": translated,
+        "translated": narration["translated"],
     }
     result["scenario"] = {
         "rainfall_factor": rainfall_factor,
